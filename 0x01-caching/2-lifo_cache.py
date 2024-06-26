@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-This module contains the FIFOCache class that implements a caching system using
-the First In, First Out (FIFO) algorithm.
+This module contains the LIFOCache class that implements a caching system using
+the Last In, First Out (LIFO) algorithm.
 """
 
 from base_caching import BaseCaching
@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 class LIFOCache(BaseCaching):
     """
-    FIFOCache class implements a caching system with FIFO eviction policy.
+    LIFOCache class implements a caching system with LIFO eviction policy.
 
     Args:
         BaseCaching (class): Base class with cache system interface.
@@ -30,7 +30,7 @@ class LIFOCache(BaseCaching):
     def put(self, key, item):
         """
         Add an item to the cache. If the cache exceeds its maximum size,
-        remove the first added item.
+        remove the last added item.
 
         Args:
             key (str): The key under which the item should be stored.
