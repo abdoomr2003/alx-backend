@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-LFUCache module implements a caching system using the Least Frequently Used (LFU) algorithm.
+LFUCache module implements a caching system using
+the Least Frequently Used (LFU) algorithm.
 """
 
 from collections import OrderedDict, defaultdict
 from base_caching import BaseCaching
+
 
 class LFUCache(BaseCaching):
     """
@@ -19,8 +21,10 @@ class LFUCache(BaseCaching):
 
         Attributes:
             cache_data (OrderedDict): Dictionary to store the cache items.
-            frequency (defaultdict): Dictionary to store the frequency count of items.
-            lru (defaultdict): Dictionary to store the order of insertion for LRU policy within the same frequency count.
+            frequency (defaultdict): Dictionary to store the frequency
+            count of items.
+            lru (defaultdict): Dictionary to store the order of insertion for
+            LRU policy within the same frequency count.
             lru_counter (int): Counter to maintain the order of insertion.
         """
         super().__init__()
@@ -73,7 +77,8 @@ class LFUCache(BaseCaching):
             key (str): The key of the item to be retrieved.
 
         Returns:
-            any: The value associated with the key, or None if the key is not found.
+            any: The value associated with the key,
+            or None if the key is not found.
         """
         if key is None or key not in self.cache_data:
             return None
