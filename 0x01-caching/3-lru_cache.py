@@ -25,11 +25,15 @@ class LRUCache(BaseCaching):
         """
         if key is None or item is None:
             pass
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-            discard = self.cache_data.popitem(False)
-            print(f"DISCARD: {discard[0]}")
-        self.cache_data[key] = item
-        self.cache_data.move_to_end(key)
+        if key in self.cache_data:
+            self.cache_data.move_to_end(key)
+            self.cache_data[key] = item
+        else:
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                discard = self.cache_data.popitem(False)
+                print(f"DISCARD: {discard[0]}")
+            self.cache_data[key] = item
+            self.cache_data.move_to_end(key)
 
     def get(self, key):
         """_summary_
