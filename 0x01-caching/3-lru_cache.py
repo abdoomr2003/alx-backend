@@ -31,8 +31,6 @@ class LRUCache(BaseCaching):
         self.cache_data[key] = item
         self.cache_data.move_to_end(key)
 
-
-
     def get(self, key):
         """_summary_
 
