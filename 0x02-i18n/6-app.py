@@ -11,6 +11,7 @@ from flask_babel import Babel, request, gettext as _
 
 app = Flask(__name__)
 
+
 class Config:
     """
     Configuration class for setting application parameters.
@@ -24,6 +25,7 @@ class Config:
     BABEL_DEFAULT_LOCALE = LANGUAGES[0]
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
+
 app.config.from_object(Config)
 babel = Babel(app)
 
@@ -33,6 +35,7 @@ users = {
     3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
+
 
 def get_user():
     """
@@ -47,12 +50,14 @@ def get_user():
     except (TypeError, ValueError):
         return None
 
+
 @app.before_request
 def before_request():
     """
     Executed before each request to set the user on flask.g if logged in.
     """
     g.user = get_user()
+
 
 @babel.localeselector
 def get_locale():
@@ -81,6 +86,7 @@ def get_locale():
         return g.user['locale']
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
+
 @app.route('/')
 def hello_world() -> str:
     """
@@ -91,10 +97,13 @@ def hello_world() -> str:
     """
     user = g.user
     if user:
-        message = _('You are logged in as %(username)s.', username=user['name'])
+        message = _('You are logged in as %(username)s.',
+                    username=user['name'])
     else:
         message = _('You are not logged in.')
-    return render_template('6-index.html', locale=get_locale(), message=message)
+    return render_template('6-index.html', locale=get_locale(),
+                           message=message)
+
 
 if __name__ == "__main__":
     """
