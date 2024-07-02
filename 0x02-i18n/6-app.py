@@ -6,8 +6,9 @@ route.
 The application runs on host '0.0.0.0' and port 5000 with debug mode enabled.
 """
 
-from flask import Flask, render_template, g
-from flask_babel import Babel, request, gettext as _
+from flask import Flask, render_template, g, request
+from flask_babel import Babel, gettext as _
+from typing import Optional, Dict, Any
 
 app = Flask(__name__)
 
@@ -30,29 +31,29 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 users = {
-    1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
-    2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
+    1: {"name": "John Doe", "locale": "fr", "timezone": "Europe/Paris"},
+    2: {"name": "Jane Smith", "locale": "en", "timezone": "US/Central"},
     3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
-    4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
+    4: {"name": "Unknown", "locale": None, "timezone": "Europe/London"},
 }
 
 
-def get_user():
+def get_user() -> object:
     """
     Retrieves a user dictionary based on the login_as parameter.
 
     Returns:
-        dict or None: The user dictionary if found, otherwise None.
+        Optional[Dict[str, Any]]: The user dictionary if found, otherwise None.
     """
     try:
-        user_id = int(request.args.get('login_as'))
+        user_id = int(request.args.get('login_as', default='0'))
         return users.get(user_id)
     except (TypeError, ValueError):
         return None
 
 
 @app.before_request
-def before_request():
+def before_request() -> None:
     """
     Executed before each request to set the user on flask.g if logged in.
     """
@@ -60,7 +61,7 @@ def before_request():
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> Optional[str]:
     """
     Selects the best match for the client's preferred language.
 
@@ -76,14 +77,14 @@ def get_locale():
     4. Default locale
 
     Returns:
-        str: The best matching language code from the supported languages,
-        or the default language if no match is found.
+        Optional[str]: The best matching language code from the supported languages,
+        or None if no match is found.
     """
     locale = request.args.get('locale')
     if locale and locale in app.config['LANGUAGES']:
         return locale
-    if g.user and g.user['locale'] in app.config['LANGUAGES']:
-        return g.user['locale']
+    if g.user and g.user.get('locale') in app.config['LANGUAGES']:
+        return g.user.get('locale')
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
@@ -97,12 +98,10 @@ def hello_world() -> str:
     """
     user = g.user
     if user:
-        message = _('You are logged in as %(username)s.',
-                    username=user['name'])
+        message = _('You are logged in as %(username)s.', username=user['name'])
     else:
         message = _('You are not logged in.')
-    return render_template('6-index.html', locale=get_locale(),
-                           message=message)
+    return render_template('6-index.html', locale=get_locale(), message=message)
 
 
 if __name__ == "__main__":
